@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "xyz.jeelzzz"
+group = "com.github.mpschorr"
 version = "0.1.0"
 
 repositories {
