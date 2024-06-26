@@ -1,6 +1,5 @@
 package xyz.jeelzzz.firefly
 
-import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
@@ -34,16 +33,18 @@ class ConfigNode(val configuration: ConfigurationSection, val key: String) {
         return this.configuration.getVector(key)
     }
 
-    fun getString(): String {
+    fun getString(): String? {
         return this.configuration.getString(key)
     }
 
-    fun getConfigurationSection() : ConfigurationSection {
-        return this.getConfigurationSection()
-    }
+//    fun getConfigurationSection() : ConfigurationSection {
+//        return this.getConfigurationSection()
+//    }
 
     fun createChild(childKey: String) : ConfigNode {
-        val newKey = "$key.$childKey"
+        val newKey =
+            if (key.isNotEmpty()) "$key.$childKey"
+            else childKey
         return ConfigNode(this.configuration, newKey)
     }
 }

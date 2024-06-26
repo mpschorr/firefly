@@ -11,5 +11,5 @@ interface ValueDecoder<T> {
      * @param node the configuration node to decode
      * @return the decoded value of type T
      */
-    fun decode(node: ConfigNode): T
+    fun decode(node: ConfigNode, ctx: DecodeContext): T
 }
