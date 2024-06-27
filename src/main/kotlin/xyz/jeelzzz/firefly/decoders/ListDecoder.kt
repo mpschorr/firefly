@@ -4,39 +4,40 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.MemoryConfiguration
 import xyz.jeelzzz.firefly.ConfigNode
 import xyz.jeelzzz.firefly.DecodeContext
+import xyz.jeelzzz.firefly.ValueDecodeException
 import xyz.jeelzzz.firefly.ValueDecoder
 import kotlin.reflect.KClass
 
 class ListDecoder {
     fun <T : Any> decode(decoder: ValueDecoder<out T>, node: ConfigNode, ctx: DecodeContext): List<T> {
-        if (!node.configuration.isList(node.key))
-            throw IllegalArgumentException("Property ${node.key} was expected to be a List but was not")
+        if (!node.configuration.isList(node.bukkitKey))
+            throw ValueDecodeException("Property ${node.decodeKey} was not a List")
 
         // Create fake configuration for list this is so stupid
         val fakeSection = MemoryConfiguration()
-        val elements = node.configuration.getList(node.key)
+        val elements = node.configuration.getList(node.bukkitKey)
 
-        return elements.map {
-            fakeSection.set("tmp", it)
-            val elementNode = ConfigNode(fakeSection, "tmp")
+        return elements.mapIndexed { index, it ->
+            fakeSection.set("_", it)
+            val elementNode = ConfigNode(fakeSection, "_", "${node.decodeKey}.${index}")
             decoder.decode(elementNode, ctx)
         }
     }
 
     fun <T : Any> decodeDataClass(decoder: DataClassDecoder, kClass: KClass<T>, node: ConfigNode, ctx: DecodeContext): List<T> {
-        if (!node.configuration.isList(node.key))
-            throw IllegalArgumentException("Property ${node.key} was expected to be a List but was not")
+        if (!node.configuration.isList(node.bukkitKey))
+            throw ValueDecodeException("Property ${node.decodeKey} was not a List")
         if (!kClass.isData)
-            throw IllegalArgumentException("Generic type of list ${node.key} was not a data class")
+            throw ValueDecodeException("List type of ${node.decodeKey} was not a data class")
 
-        val elements = node.configuration.getList(node.key)
+        val elements = node.configuration.getList(node.bukkitKey)
 
-        return elements.map map@{
+        return elements.mapIndexed map@{ index, it ->
             if (it !is HashMap<*,*>)
                 throw IllegalArgumentException("Element was not a map")
 
             val elementConfig = mapToConfig(it)
-            val elementNode = ConfigNode(elementConfig, "")
+            val elementNode = ConfigNode(elementConfig, "", "${node.decodeKey}.${index}")
             decoder.decode(kClass, elementNode, ctx)
         }
     }

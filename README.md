@@ -10,8 +10,9 @@
 
 - [x] Simple decoding with nested data classes
 - [x] Custom decoders
+- [x] Lists
+- [ ] Maps
 - [ ] Decorators for remapping
-- [ ] Lists and Maps
 
 ## Usage
 
