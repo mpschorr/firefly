@@ -49,7 +49,7 @@ class DecodeExceptionTest {
 
             val section = YamlConfiguration()
             section.loadFromString("""
-                abc: 1
+                sub: 1
             """.trimIndent())
 
             val result = loader.decode<Data>(section)
