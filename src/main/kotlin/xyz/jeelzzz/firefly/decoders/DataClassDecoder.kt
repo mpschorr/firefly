@@ -21,7 +21,16 @@ class DataClassDecoder(val loader: FireflyLoader) {
 
             val node = parentNode.createChild(property.name)
 
-//            if (property.returnType.isMarkedNullable)
+//            if (property.returnType.isMarkedNullable && property.)
+
+            if (!node.exists()) {
+                if (property.returnType.isMarkedNullable) {
+                    args[property.name] = null
+                    continue
+                } else {
+                    throw ValueDecodeException("Property ${node.decodeKey} was required but was not found")
+                }
+            }
 
             // Property is sub data class
             if (propertyKClass != null && propertyKClass.isData) {

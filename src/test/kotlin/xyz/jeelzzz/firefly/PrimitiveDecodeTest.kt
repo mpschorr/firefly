@@ -3,6 +3,7 @@ package xyz.jeelzzz.firefly
 import org.bukkit.configuration.MemoryConfiguration
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class PrimitiveDecodeTest {
     private val loader = FireflyLoader()
@@ -47,5 +48,20 @@ class PrimitiveDecodeTest {
         val result = loader.decode<Data>(section)
         assertEquals("foo", result.abc)
         assertEquals(123, result.xyz)
+    }
+
+    @Test
+    fun testNullableDecode() {
+        data class Data(
+            val abc: String,
+            val xyz: Int?
+        )
+
+        val section = MemoryConfiguration()
+        section.set("abc", "hi")
+
+        val result = loader.decode<Data>(section)
+        assertEquals("hi", result.abc)
+        assertNull(result.xyz)
     }
 }
